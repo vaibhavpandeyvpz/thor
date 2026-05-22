@@ -58,10 +58,10 @@ export function classifyPort(port: unknown): ClassifiedSerialPort {
 
 export function platformHint(platform: NodeJS.Platform): string {
   if (platform === "win32") {
-    return "Windows hint: install Samsung USB/modem drivers and use COMx from `thor devices`.";
+    return "Windows hint: install Samsung USB/modem drivers and use COMx from `thorjs devices`.";
   }
   if (platform === "linux") {
-    return "Linux hint: ensure udev permissions for /dev/ttyACM* and run `thor devices`.";
+    return "Linux hint: ensure udev permissions for /dev/ttyACM* and run `thorjs devices`.";
   }
   if (platform === "darwin") {
     return "macOS hint: look for /dev/cu.* ports and grant serial access if prompted.";

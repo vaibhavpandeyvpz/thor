@@ -1,6 +1,6 @@
 # thor
 
-`thor` is a command-line tool for quickly flashing Samsung firmware over a serial
+`thorjs` is a command-line tool for quickly flashing Samsung firmware over a serial
 download-mode connection.
 
 It is designed to be:
@@ -31,9 +31,9 @@ It is designed to be:
 ## Quick Start (npx)
 
 ```bash
-npx thor devices
-npx thor doctor
-npx thor doctor --port COM9
+npx thorjs@latest devices
+npx thorjs@latest doctor
+npx thorjs@latest doctor --port COM9
 ```
 
 Flash examples:
@@ -41,7 +41,7 @@ Flash examples:
 Windows (`COMx`):
 
 ```powershell
-npx thor flash `
+npx thorjs@latest flash `
   --bl BL.tar.md5 `
   --ap AP.tar.md5 `
   --cp CP.tar.md5 `
@@ -54,7 +54,7 @@ npx thor flash `
 Linux (`/dev/ttyACM*`):
 
 ```bash
-npx thor flash \
+npx thorjs@latest flash \
   --bl BL.tar.md5 \
   --ap AP.tar.md5 \
   --cp CP.tar.md5 \
@@ -67,7 +67,7 @@ npx thor flash \
 macOS (`/dev/cu.*`):
 
 ```bash
-npx thor flash \
+npx thorjs@latest flash \
   --bl BL.tar.md5 \
   --ap AP.tar.md5 \
   --cp CP.tar.md5 \
@@ -94,10 +94,10 @@ node dist/src/cli.js --help
 
 The sections below describe the current CLI commands and options.
 
-### `thor --help`
+### `thorjs --help`
 
 ```text
-Usage: thor [options] [command]
+Usage: thorjs [options] [command]
 
 Samsung Odin/Loke flashing toolkit
 
@@ -116,10 +116,10 @@ Commands:
   help [command]         display help for command
 ```
 
-### `thor list-ports --help`
+### `thorjs list-ports --help`
 
 ```text
-Usage: thor list-ports [options]
+Usage: thorjs list-ports [options]
 
 List serial ports visible to node-serialport
 
@@ -127,10 +127,10 @@ Options:
   -h, --help  display help for command
 ```
 
-### `thor devices --help`
+### `thorjs devices --help`
 
 ```text
-Usage: thor devices [options]
+Usage: thorjs devices [options]
 
 List serial devices with Odin-focused hints
 
@@ -139,10 +139,10 @@ Options:
   -h, --help  display help for command
 ```
 
-### `thor doctor --help`
+### `thorjs doctor --help`
 
 ```text
-Usage: thor doctor [options]
+Usage: thorjs doctor [options]
 
 Run cross-platform environment and serial preflight checks
 
@@ -151,10 +151,10 @@ Options:
   -h, --help     display help for command
 ```
 
-### `thor plan --help`
+### `thorjs plan --help`
 
 ```text
-Usage: thor plan [options] <packages...>
+Usage: thorjs plan [options] <packages...>
 
 Inspect one or more firmware packages without contacting a device
 
@@ -162,10 +162,10 @@ Options:
   -h, --help  display help for command
 ```
 
-### `thor handshake --help`
+### `thorjs handshake --help`
 
 ```text
-Usage: thor handshake [options]
+Usage: thorjs handshake [options]
 
 Open a device and perform only ODIN/LOKE handshake
 
@@ -174,10 +174,10 @@ Options:
   -h, --help     display help for command
 ```
 
-### `thor device-info --help`
+### `thorjs device-info --help`
 
 ```text
-Usage: thor device-info [options]
+Usage: thorjs device-info [options]
 
 Open a device, handshake, and request DVIF device information
 
@@ -186,10 +186,10 @@ Options:
   -h, --help     display help for command
 ```
 
-### `thor flash --help`
+### `thorjs flash --help`
 
 ```text
-Usage: thor flash [options]
+Usage: thorjs flash [options]
 
 Guarded flashing entry point. This is intentionally conservative.
 
@@ -216,5 +216,5 @@ does not contact the device.
 
 - Flashing can permanently brick devices.
 - Use firmware that exactly matches your model/region.
-- Use `thor plan`, `thor devices`, and `thor doctor` before live flashing.
+- Use `thorjs plan`, `thorjs devices`, and `thorjs doctor` before live flashing.
 - `--repartition` and `--nand-erase` are high risk; use only when required.

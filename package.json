@@ -1,5 +1,5 @@
 {
-  "name": "thor",
+  "name": "thorjs",
   "version": "0.1.0",
   "description": "CLI for flashing Samsung firmware over serial download mode.",
   "type": "module",
@@ -12,7 +12,7 @@
     }
   },
   "bin": {
-    "thor": "./dist/src/cli.js"
+    "thorjs": "./dist/src/cli.js"
   },
   "files": [
     "dist",
@@ -26,7 +26,19 @@
     "cli",
     "serial"
   ],
+  "author": {
+    "name": "Vaibhav Pandey",
+    "email": "contact@vaibhavpandey.com"
+  },
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vaibhavpandeyvpz/thor.git"
+  },
+  "bugs": {
+    "url": "https://github.com/vaibhavpandeyvpz/thor/issues"
+  },
+  "homepage": "https://github.com/vaibhavpandeyvpz/thor#readme",
   "scripts": {
     "build": "tsc -p tsconfig.json",
     "test": "npm run build && node --test \"dist/tests/**/*.test.js\"",

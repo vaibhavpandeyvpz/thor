@@ -11,7 +11,7 @@ import { FlashCommand } from "./commands/flash.js";
 const program = new CommanderCommand();
 
 program
-  .name("thor")
+  .name("thorjs")
   .description("Samsung Odin/Loke flashing toolkit")
   .version("0.1.0");
 
