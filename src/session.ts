@@ -150,12 +150,21 @@ export class OdinSession {
       this.progress("pit", `Read PIT chunk ${index}`, offset, pitSize);
     }
 
+    this.progress("pit", "Finalizing PIT read", pitSize, pitSize);
     assertAck(
       await this.command(Command.Pit, PitRequest.Complete),
       Command.Pit,
       "PIT complete",
     );
-    return parsePit(Buffer.concat(chunks));
+    this.progress("pit", "Parsing PIT", pitSize, pitSize);
+    const pit = parsePit(Buffer.concat(chunks));
+    this.progress(
+      "pit",
+      `PIT parsed (${pit.entries.length} entries)`,
+      pitSize,
+      pitSize,
+    );
+    return pit;
   }
 
   async writePit(data: Buffer | Uint8Array): Promise<void> {
@@ -222,33 +231,50 @@ export class OdinSession {
     isLast: boolean,
   ): Promise<void> {
     const totalSize = checkedNumber(size, "transfer size");
-    let remaining = size;
     let sequenceRemaining = 0;
     let sequenceWritten = 0;
     let sequence = 0;
+    let pending = Buffer.alloc(0);
 
+    this.progress("transfer", `Preparing ${name}`, 0, totalSize);
     for await (const rawChunk of chunks) {
-      let chunk = Buffer.isBuffer(rawChunk)
+      const chunk = Buffer.isBuffer(rawChunk)
         ? rawChunk
         : Buffer.from(
             rawChunk.buffer,
             rawChunk.byteOffset,
             rawChunk.byteLength,
           );
-      while (chunk.byteLength > 0) {
+      pending = Buffer.concat([pending, chunk]);
+      while (pending.byteLength > 0) {
         if (sequenceRemaining === 0) {
           const bytesLeft = totalSize - sequence * this.maxTransferSequenceSize;
           const sequenceSize = Math.min(
             bytesLeft,
             this.maxTransferSequenceSize,
           );
-          await this.beginTransferSequence(sequenceSize);
+          this.progress(
+            "transfer",
+            `Starting ${name} sequence ${sequence + 1}`,
+            sequence * this.maxTransferSequenceSize,
+            totalSize,
+          );
+          await this.beginTransferSequence(
+            sequenceSize,
+            name,
+            sequence + 1,
+            sequence * this.maxTransferSequenceSize,
+            totalSize,
+          );
           sequenceRemaining = sequenceSize;
           sequenceWritten = 0;
         }
-        const take = Math.min(chunk.byteLength, sequenceRemaining);
-        const piece = chunk.subarray(0, take);
-        await this.transport.writeExact(piece);
+
+        const take = Math.min(this.filePartSize, sequenceRemaining);
+        if (pending.byteLength < take) break;
+
+        const piece = pending.subarray(0, take);
+        await this.writeTransferPart(piece);
         await this.transport.readExact(8, this.timeoutMs);
         sequenceWritten += piece.byteLength;
         sequenceRemaining -= piece.byteLength;
@@ -261,16 +287,28 @@ export class OdinSession {
           ),
           totalSize,
         );
-        chunk = chunk.subarray(take);
+        pending = pending.subarray(take);
 
         if (sequenceRemaining === 0) {
           const sequenceIsLast =
             sequence * this.maxTransferSequenceSize + sequenceWritten >=
               totalSize && isLast;
+          this.progress(
+            "transfer",
+            `Finishing ${name} sequence ${sequence + 1}`,
+            Math.min(
+              sequence * this.maxTransferSequenceSize + sequenceWritten,
+              totalSize,
+            ),
+            totalSize,
+          );
           await this.finishTransferSequence(
             sequenceWritten,
             entry,
             sequenceIsLast,
+            name,
+            sequence + 1,
+            totalSize,
           );
           sequence += 1;
         }
@@ -278,11 +316,11 @@ export class OdinSession {
     }
 
     if (totalSize === 0 && sequence === 0) {
-      await this.beginTransferSequence(0);
-      await this.finishTransferSequence(0, entry, isLast);
+      await this.beginTransferSequence(0, name, 1, 0, totalSize);
+      await this.finishTransferSequence(0, entry, isLast, name, 1, totalSize);
       return;
     }
-    if (sequenceRemaining !== 0) {
+    if (pending.byteLength > 0 || sequenceRemaining !== 0) {
       throw new Error(`Input stream ended early for ${name}`);
     }
     const expectedSequences = Math.ceil(
@@ -295,12 +333,40 @@ export class OdinSession {
     }
   }
 
-  private async beginTransferSequence(size: number): Promise<void> {
+  private async writeTransferPart(data: Buffer): Promise<void> {
+    if (data.byteLength === this.filePartSize) {
+      await this.transport.writeExact(data);
+      return;
+    }
+    const part = Buffer.alloc(this.filePartSize);
+    data.copy(part);
+    await this.transport.writeExact(part);
+  }
+
+  private async beginTransferSequence(
+    size: number,
+    name: string,
+    sequence: number,
+    bytesWritten: number,
+    totalBytes: number,
+  ): Promise<void> {
     const roundedSize = roundUp(size, TRANSFER_ROUNDING);
+    this.progress(
+      "transfer",
+      `Sending ${name} download command for sequence ${sequence}`,
+      bytesWritten,
+      totalBytes,
+    );
     assertAck(
       await this.command(Command.Transfer, TransferRequest.Download),
       Command.Transfer,
       "transfer download",
+    );
+    this.progress(
+      "transfer",
+      `Sending ${name} start command for sequence ${sequence}`,
+      bytesWritten,
+      totalBytes,
     );
     assertAck(
       await this.command(Command.Transfer, TransferRequest.Start, [
@@ -315,16 +381,16 @@ export class OdinSession {
     size: number,
     entry: PitEntry,
     isLast: boolean,
+    name: string,
+    sequence: number,
+    totalBytes: number,
   ): Promise<void> {
-    const roundedSize = roundUp(size, TRANSFER_ROUNDING);
-    let pad = roundedSize - size;
-    while (pad > 0) {
-      const chunk = Buffer.alloc(Math.min(this.filePartSize, pad));
-      await this.transport.writeExact(chunk);
-      await this.transport.readExact(8, this.timeoutMs);
-      pad -= chunk.byteLength;
-    }
-
+    this.progress(
+      "transfer",
+      `Sending ${name} complete command for sequence ${sequence}`,
+      Math.min(sequence * this.maxTransferSequenceSize, totalBytes),
+      totalBytes,
+    );
     assertAck(
       await this.command(Command.Transfer, TransferRequest.Complete, [
         entry.binaryType,
