@@ -1,4 +1,9 @@
-# thor
+# thorjs
+
+[![npm version](https://img.shields.io/npm/v/thorjs.svg)](https://www.npmjs.com/package/thorjs)
+[![npm downloads](https://img.shields.io/npm/dm/thorjs.svg)](https://www.npmjs.com/package/thorjs)
+[![GitHub Actions](https://github.com/vaibhavpandeyvpz/thor/actions/workflows/publish-npm.yml/badge.svg)](https://github.com/vaibhavpandeyvpz/thor/actions/workflows/publish-npm.yml)
+[![license: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](./LICENSE)
 
 `thorjs` is a command-line tool for quickly flashing Samsung firmware over a serial
 download-mode connection.
@@ -218,3 +223,11 @@ does not contact the device.
 - Use firmware that exactly matches your model/region.
 - Use `thorjs plan`, `thorjs devices`, and `thorjs doctor` before live flashing.
 - `--repartition` and `--nand-erase` are high risk; use only when required.
+
+## Disclaimer
+
+By using this project, you acknowledge that firmware flashing is inherently risky and may permanently damage or brick devices.
+
+This software is provided "as is", without warranties or guarantees of any kind. The author and contributors cannot be held responsible or liable for any damage, data loss, warranty voidance, or other consequences resulting from use or misuse of this tool.
+
+You assume full responsibility for all actions performed with `thorjs` and use it entirely at your own risk.
