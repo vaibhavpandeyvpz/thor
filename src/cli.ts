@@ -9,13 +9,14 @@ import { PlanCommand } from "./commands/plan.js";
 import { HandshakeCommand } from "./commands/handshake.js";
 import { FlashCommand } from "./commands/flash.js";
 import { InteractiveCliApp } from "./ui/interactive.js";
+import pkg from "../package.json" with { type: "json" };
 
 const program = new CommanderCommand();
 
 program
-  .name("thorjs")
-  .description("Samsung Odin/Loke flashing toolkit")
-  .version("0.1.1");
+  .name(pkg.name)
+  .description(pkg.description)
+  .version(pkg.version);
 
 const commands: CliCommand[] = [
   new DevicesCommand(),
