@@ -111,7 +111,6 @@ Options:
   -h, --help             display help for command
 
 Commands:
-  list-ports             List serial ports visible to node-serialport
   devices [options]      List serial devices with Odin-focused hints
   doctor [options]       Run cross-platform environment and serial preflight checks
   plan <packages...>     Inspect one or more firmware packages without contacting a device
@@ -119,17 +118,6 @@ Commands:
   device-info [options]  Open a device, handshake, and request DVIF device information
   flash [options]        Guarded flashing entry point. This is intentionally conservative.
   help [command]         display help for command
-```
-
-### `thorjs list-ports --help`
-
-```text
-Usage: thorjs list-ports [options]
-
-List serial ports visible to node-serialport
-
-Options:
-  -h, --help  display help for command
 ```
 
 ### `thorjs devices --help`
