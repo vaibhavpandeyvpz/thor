@@ -1,6 +1,6 @@
 {
   "name": "thorjs",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "description": "CLI for flashing Samsung firmware over serial download mode.",
   "type": "module",
   "main": "./dist/src/index.js",
