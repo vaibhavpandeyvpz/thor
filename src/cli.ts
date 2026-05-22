@@ -13,10 +13,7 @@ import pkg from "../package.json" with { type: "json" };
 
 const program = new CommanderCommand();
 
-program
-  .name(pkg.name)
-  .description(pkg.description)
-  .version(pkg.version);
+program.name(pkg.name).description(pkg.description).version(pkg.version);
 
 const commands: CliCommand[] = [
   new DevicesCommand(),
