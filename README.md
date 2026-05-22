@@ -35,6 +35,19 @@ It is designed to be:
 
 ## Quick Start (npx)
 
+Start the guided interactive UI:
+
+```bash
+npx thorjs@latest
+```
+
+Interactive mode groups common workflows into two tabs:
+
+- `Flash`: plan firmware packages or run the guarded flash wizard.
+- `Utilities`: list devices, inspect device info, test handshake, read PIT, or troubleshoot setup.
+
+Use non-interactive commands when scripting or automating:
+
 ```bash
 npx thorjs@latest devices
 npx thorjs@latest doctor

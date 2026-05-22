@@ -16,3 +16,4 @@ export * from "./transports/types.js";
 export * from "./transports/serial.js";
 export * from "./utils/port-finder.js";
 export * from "./utils/md5.js";
+export * from "./ui/interactive.js";
