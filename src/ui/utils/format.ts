@@ -75,7 +75,7 @@ export function actionById(id: ActionId): Action {
 }
 
 export function needsPort(action: ActionId): boolean {
-  return action === "handshake" || action === "device-info" || action === "pit";
+  return action === "handshake" || action === "pit";
 }
 
 export function needsTextInput(action: ActionId): boolean {

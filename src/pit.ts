@@ -53,27 +53,19 @@ export function parsePit(data: Buffer | Uint8Array): Pit {
 
   const magic = buf.readUInt32LE(0);
   const entryCount = buf.readUInt32LE(4);
-  const headerSize = buf.readUInt32LE(8);
-  const entrySize = buf.readUInt32LE(12);
 
   if (magic !== PIT_MAGIC) {
     throw new Error(`Bad PIT magic: 0x${magic.toString(16).padStart(8, "0")}`);
   }
-  if (headerSize !== PIT_HEADER_SIZE) {
-    throw new Error(`Unexpected PIT header size: ${headerSize}`);
-  }
-  if (entrySize !== PIT_ENTRY_SIZE) {
-    throw new Error(`Unexpected PIT entry size: ${entrySize}`);
-  }
 
-  const needed = headerSize + entryCount * entrySize;
+  const needed = PIT_HEADER_SIZE + entryCount * PIT_ENTRY_SIZE;
   if (buf.byteLength < needed) {
     throw new Error(`PIT truncated: need ${needed}, got ${buf.byteLength}`);
   }
 
   const entries: PitEntry[] = [];
   for (let i = 0; i < entryCount; i += 1) {
-    const offset = headerSize + i * entrySize;
+    const offset = PIT_HEADER_SIZE + i * PIT_ENTRY_SIZE;
     entries.push({
       binaryType: buf.readUInt32LE(offset),
       deviceType: buf.readUInt32LE(offset + 4),

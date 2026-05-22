@@ -11,8 +11,7 @@ test("parsePit decodes Samsung PIT header and entry strings", () => {
   const buf = Buffer.alloc(PIT_HEADER_SIZE + PIT_ENTRY_SIZE);
   buf.writeUInt32LE(PIT_MAGIC, 0);
   buf.writeUInt32LE(1, 4);
-  buf.writeUInt32LE(PIT_HEADER_SIZE, 8);
-  buf.writeUInt32LE(PIT_ENTRY_SIZE, 12);
+  buf.write("COM_TAR2LSI7870", 8, "ascii");
   const off = PIT_HEADER_SIZE;
   buf.writeUInt32LE(0, off);
   buf.writeUInt32LE(2, off + 4);

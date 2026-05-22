@@ -7,7 +7,6 @@ import { DevicesCommand } from "./commands/devices.js";
 import { DoctorCommand } from "./commands/doctor.js";
 import { PlanCommand } from "./commands/plan.js";
 import { HandshakeCommand } from "./commands/handshake.js";
-import { DeviceInfoCommand } from "./commands/device-info.js";
 import { FlashCommand } from "./commands/flash.js";
 import { InteractiveCliApp } from "./ui/interactive.js";
 
@@ -23,7 +22,6 @@ const commands: CliCommand[] = [
   new DoctorCommand(),
   new PlanCommand(),
   new HandshakeCommand(),
-  new DeviceInfoCommand(),
   new FlashCommand(),
 ];
 

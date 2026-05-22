@@ -12,7 +12,6 @@ export enum Command {
   Pit = 101,
   Transfer = 102,
   Close = 103,
-  DeviceInfo = 105,
 }
 
 export enum InitRequest {

@@ -8,7 +8,7 @@ import {
   type FirmwareSlotInputs,
 } from "../firmware/firmware.js";
 import { createCompressedFile } from "../firmware/compression/factory.js";
-import { OdinSession, parseDeviceInfoText } from "../session.js";
+import { OdinSession } from "../session.js";
 import { listSerialPorts, SerialOdinTransport } from "../transports/serial.js";
 import {
   classifyPort,
@@ -243,30 +243,6 @@ export function InteractiveCliApp(): React.JSX.Element {
     [runTask],
   );
 
-  const runDeviceInfo = useCallback(
-    async (port: string) => {
-      await runTask("device-info", async () => {
-        const transport = new SerialOdinTransport({ path: port });
-        await transport.open();
-        try {
-          const session = new OdinSession(transport);
-          await session.handshake();
-          const info = await session.readDeviceInfo();
-          const fields = Object.entries(parseDeviceInfoText(info.text)).map(
-            ([key, value]) => `${key}: ${value}`,
-          );
-          return {
-            title: "Device information",
-            lines: fields.length > 0 ? fields : [info.text],
-          };
-        } finally {
-          await transport.close();
-        }
-      });
-    },
-    [runTask],
-  );
-
   const runPit = useCallback(
     async (port: string) => {
       await runTask("pit", async () => {
@@ -456,8 +432,6 @@ export function InteractiveCliApp(): React.JSX.Element {
         void runPlan(trimmed);
       } else if (selectedAction === "handshake") {
         void runHandshake(trimmed);
-      } else if (selectedAction === "device-info") {
-        void runDeviceInfo(trimmed);
       } else if (selectedAction === "pit") {
         void runPit(trimmed);
       } else if (selectedAction === "flash") {
@@ -465,15 +439,7 @@ export function InteractiveCliApp(): React.JSX.Element {
         setScreen("flash-confirm");
       }
     },
-    [
-      pendingSlot,
-      runDeviceInfo,
-      runHandshake,
-      runPit,
-      runPlan,
-      selectedAction,
-      textPurpose,
-    ],
+    [pendingSlot, runHandshake, runPit, runPlan, selectedAction, textPurpose],
   );
 
   useInput((inputKey, key) => {

@@ -4,7 +4,6 @@ export type ActionId =
   | "devices"
   | "doctor"
   | "handshake"
-  | "device-info"
   | "plan"
   | "flash"
   | "pit"

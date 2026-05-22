@@ -37,12 +37,6 @@ export const ACTIONS: readonly Action[] = [
     risk: "device",
   },
   {
-    id: "device-info",
-    label: "Inspect device",
-    description: "Handshake and request DVIF device information.",
-    risk: "device",
-  },
-  {
     id: "pit",
     label: "PIT from device",
     description: "Handshake, initialize, and download the device PIT table.",
@@ -62,7 +56,6 @@ export const CONFIRM_FLASH = "FLASH";
 export const FLASH_ACTIONS: readonly ActionId[] = ["plan", "flash"];
 export const UTILITY_ACTIONS: readonly ActionId[] = [
   "devices",
-  "device-info",
   "handshake",
   "pit",
   "doctor",

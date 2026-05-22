@@ -9,7 +9,6 @@ export * from "./commands/devices.js";
 export * from "./commands/doctor.js";
 export * from "./commands/plan.js";
 export * from "./commands/handshake.js";
-export * from "./commands/device-info.js";
 export * from "./commands/flash.js";
 export * from "./commands/types.js";
 export * from "./transports/types.js";

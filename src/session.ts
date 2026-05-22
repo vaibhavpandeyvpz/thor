@@ -22,7 +22,7 @@ import {
   type OdinResponse,
 } from "./protocol/packet.js";
 import { parsePit, type Pit, type PitEntry } from "./pit.js";
-import { TimeoutError, type OdinTransport } from "./transports/types.js";
+import type { OdinTransport } from "./transports/types.js";
 
 export interface OdinSessionOptions {
   readonly filePartSize?: number;
@@ -34,16 +34,10 @@ export interface OdinSessionOptions {
 }
 
 export interface ProgressEvent {
-  readonly phase: "handshake" | "pit" | "transfer" | "close" | "device-info";
+  readonly phase: "handshake" | "pit" | "transfer" | "close";
   readonly message: string;
   readonly bytesWritten?: number;
   readonly totalBytes?: number;
-}
-
-export interface DeviceInfoResult {
-  readonly text: string;
-  readonly fields: Readonly<Record<string, string>>;
-  readonly raw: Buffer;
 }
 
 export class OdinSession {
@@ -363,41 +357,6 @@ export class OdinSession {
     }
   }
 
-  async readDeviceInfo(
-    options: { idleTimeoutMs?: number; maxBytes?: number } = {},
-  ): Promise<DeviceInfoResult> {
-    const idleTimeoutMs = options.idleTimeoutMs ?? 300;
-    const maxBytes = options.maxBytes ?? 16 * 1024;
-    this.progress("device-info", "Requesting device info (DVIF)");
-    await this.transport.writeExact(Buffer.from("DVIF", "ascii"));
-
-    const chunks: Buffer[] = [];
-    let total = 0;
-    while (total < maxBytes) {
-      try {
-        const byte = await this.transport.readExact(1, idleTimeoutMs);
-        chunks.push(byte);
-        total += 1;
-      } catch (error) {
-        if (error instanceof TimeoutError) {
-          break;
-        }
-        throw error;
-      }
-    }
-
-    const raw = Buffer.concat(chunks);
-    const text = raw.toString("ascii").replace(/\0/g, "").trim();
-    if (!text) {
-      throw new Error("Device did not return any DVIF payload");
-    }
-    return {
-      text,
-      fields: parseDeviceInfoText(text),
-      raw,
-    };
-  }
-
   private progress(
     phase: ProgressEvent["phase"],
     message: string,
@@ -414,22 +373,6 @@ export class OdinSession {
     if (totalBytes !== undefined) event.totalBytes = totalBytes;
     this.onProgress?.(event);
   }
-}
-
-export function parseDeviceInfoText(
-  text: string,
-): Readonly<Record<string, string>> {
-  const out: Record<string, string> = {};
-  for (const segment of text.split(";")) {
-    const cleaned = segment.replace(/[#@]/g, "").trim();
-    if (!cleaned) continue;
-    const index = cleaned.indexOf("=");
-    if (index <= 0 || index === cleaned.length - 1) continue;
-    const key = cleaned.slice(0, index).trim();
-    const value = cleaned.slice(index + 1).trim();
-    if (key && value) out[key] = value;
-  }
-  return out;
 }
 
 function createReadStreamRange(

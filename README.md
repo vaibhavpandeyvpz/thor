@@ -44,7 +44,7 @@ npx thorjs@latest
 Interactive mode groups common workflows into two tabs:
 
 - `Flash`: plan firmware packages or run the guarded flash wizard.
-- `Utilities`: list devices, inspect device info, test handshake, read PIT, or troubleshoot setup.
+- `Utilities`: list devices, test handshake, read PIT, or troubleshoot setup.
 
 Use non-interactive commands when scripting or automating:
 
@@ -128,7 +128,6 @@ Commands:
   doctor [options]       Run cross-platform environment and serial preflight checks
   plan <packages...>     Inspect one or more firmware packages without contacting a device
   handshake [options]    Open a device and perform only ODIN/LOKE handshake
-  device-info [options]  Open a device, handshake, and request DVIF device information
   flash [options]        Guarded flashing entry point. This is intentionally conservative.
   help [command]         display help for command
 ```
@@ -174,18 +173,6 @@ Options:
 Usage: thorjs handshake [options]
 
 Open a device and perform only ODIN/LOKE handshake
-
-Options:
-  --port <path>  serial port path, e.g. COM1 or \\.\COM1
-  -h, --help     display help for command
-```
-
-### `thorjs device-info --help`
-
-```text
-Usage: thorjs device-info [options]
-
-Open a device, handshake, and request DVIF device information
 
 Options:
   --port <path>  serial port path, e.g. COM1 or \\.\COM1
