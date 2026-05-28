@@ -1,12 +1,26 @@
-# thorjs
-
-[![npm version](https://img.shields.io/npm/v/thorjs.svg)](https://www.npmjs.com/package/thorjs)
-[![npm downloads](https://img.shields.io/npm/dm/thorjs.svg)](https://www.npmjs.com/package/thorjs)
-[![GitHub Actions](https://github.com/vaibhavpandeyvpz/thor/actions/workflows/publish-npm.yml/badge.svg)](https://github.com/vaibhavpandeyvpz/thor/actions/workflows/publish-npm.yml)
-[![license: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](./LICENSE)
-
-`thorjs` is a command-line tool for quickly flashing Samsung firmware over a serial
-download-mode connection.
+<div align="center">
+  <h1>thorjs</h1>
+  <p>
+    <code>thorjs</code> is a command-line tool for quickly flashing Samsung firmware over a serial download-mode connection.
+  </p>
+  <p>
+    <a href="https://www.npmjs.com/package/thorjs">
+      <img src="https://img.shields.io/npm/v/thorjs.svg" alt="npm version" />
+    </a>
+    <a href="https://www.npmjs.com/package/thorjs">
+      <img src="https://img.shields.io/npm/dm/thorjs.svg" alt="npm downloads" />
+    </a>
+    <a href="https://github.com/vaibhavpandeyvpz/thor/actions/workflows/publish-npm.yml">
+      <img src="https://github.com/vaibhavpandeyvpz/thor/actions/workflows/publish-npm.yml/badge.svg" alt="GitHub Actions" />
+    </a>
+    <a href="./LICENSE">
+      <img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="license: MIT" />
+    </a>
+  </p>
+  <p>
+    <img src=".github/screenshot.png" alt="Thor screenshot" />
+  </p>
+</div>
 
 It is designed to be:
 
@@ -204,6 +218,29 @@ Options:
 
 If `--i-understand-this-can-brick` is omitted, `flash` runs as a dry plan and
 does not contact the device.
+
+## Skill: `flash-samsung-phone`
+
+This repository includes an installable skill at:
+
+- `skills/flash-samsung-phone/SKILL.md`
+
+The skill is self-contained and includes concrete command examples, option
+combination rules, and a strict session safety rule: after any
+device-contacting operation, reboot the phone back into Download Mode before
+issuing another device command.
+
+Install it with the `skills` CLI:
+
+```bash
+npx skills add vaibhavpandeyvpz/thor/skills/flash-samsung-phone
+```
+
+From a local clone of this repository:
+
+```bash
+npx skills add ./skills/flash-samsung-phone
+```
 
 ## Safety Notes
 
